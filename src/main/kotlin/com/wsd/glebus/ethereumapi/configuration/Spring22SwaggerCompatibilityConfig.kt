@@ -33,26 +33,19 @@ import java.lang.reflect.Type
 
 @Configuration
 @Deprecated("Remove after https://github.com/springfox/springfox/issues/2932 fixed")
-class SwaggerFixingIssueConfig {
+class Spring22SwaggerCompatibilityConfig {
 
     @Primary
     @Bean
     fun documentationPluginsManagerBootAdapter(): DocumentationPluginsManagerBootAdapter {
-        return DocumentationPluginsManagerBootAdapter();
+        return DocumentationPluginsManagerBootAdapter()
     }
-
-    @Autowired
-    lateinit var typeResolver: TypeResolver;
-
-    @Autowired
-    lateinit var typeNameProviders: PluginRegistry<TypeNameProviderPlugin, DocumentationType>;
-
-    @Autowired
-    lateinit var enumTypeDeterminer: EnumTypeDeterminer;
 
     @Primary
     @Bean
-    fun typeNameExtractorBootAdapter(): TypeNameExtractorBootAdapter {
+    fun typeNameExtractorBootAdapter(typeResolver: TypeResolver,
+                                     typeNameProviders: PluginRegistry<TypeNameProviderPlugin, DocumentationType>,
+                                     enumTypeDeterminer: EnumTypeDeterminer): TypeNameExtractorBootAdapter {
         return TypeNameExtractorBootAdapter(typeResolver, typeNameProviders, enumTypeDeterminer);
     }
 
@@ -66,12 +59,12 @@ class SwaggerFixingIssueConfig {
         lateinit var defaultsProviders: PluginRegistry<DefaultsProviderPlugin, DocumentationType>
 
         override fun resourceGroupingStrategy(documentationType: DocumentationType): ResourceGroupingStrategy {
-            return resourceGroupingStrategies!!.getPluginOrDefaultFor(documentationType, SpringGroupingStrategy())
+            return resourceGroupingStrategies.getPluginOrDefaultFor(documentationType, SpringGroupingStrategy())
         }
 
         override fun createContextBuilder(documentationType: DocumentationType,
                                           defaultConfiguration: DefaultConfiguration): DocumentationContextBuilder {
-            return defaultsProviders!!.getPluginOrDefaultFor(documentationType, defaultConfiguration)
+            return defaultsProviders.getPluginOrDefaultFor(documentationType, defaultConfiguration)
                     .create(documentationType).withResourceGroupingStrategy(resourceGroupingStrategy(documentationType))
         }
     }
