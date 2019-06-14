@@ -204,6 +204,7 @@
                     <compilerPlugins>
                         <plugin>jpa</plugin>
                         <plugin>spring</plugin>
+                        <plugin>no-arg</plugin>
                     </compilerPlugins>
                     <args>
                         <arg>-Xjsr305=strict</arg>
