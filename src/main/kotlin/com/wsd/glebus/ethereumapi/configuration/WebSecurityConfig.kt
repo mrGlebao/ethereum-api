@@ -19,7 +19,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Bean
     fun myBasicAuthenticationEntryPoint(): MyBasicAuthenticationEntryPoint {
-        return MyBasicAuthenticationEntryPoint();
+        return MyBasicAuthenticationEntryPoint()
     }
 
     override fun configure(http: HttpSecurity) {
