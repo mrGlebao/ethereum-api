@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20190615-1
+      author: g.zaborovskiy
+      changes:
+        - createTable:
+            tableName: user
+            remarks: user data for spring security
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  remarks: user identifier
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(50)
+                  remarks: username
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(50)
+                  remarks: password
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enabled
+                  type: boolean
+                  remarks: user is enabled (spring security)
+                  defaultValueBoolean: true
+              - column:
+                  name: credentials_non_expired
+                  type: boolean
+                  remarks: credentials are not expired (spring security)
+                  defaultValueBoolean: true
+              - column:
+                  name: account_non_expired
+                  type: boolean
+                  remarks: account is non expired (spring security)
+                  defaultValueBoolean: true
+              - column:
+                  name: account_non_locked
+                  type: boolean
+                  remarks: account is non locked (spring security)
+                  defaultValueBoolean: true
+  - changeSet:
+      id: 20190615-2
+      author: g.zaborovskiy
+      changes:
+        - addColumn:
+            tableName: user
+            column:
+              name: credentials_id
+              type: bigint
+              remarks: id of credentials belonging to user
+        - addForeignKeyConstraint:
+            constraintName: fk_credentials_user
+            baseTableName: user
+            baseColumnNames: credentials_id
+            referencedTableName: user_credentials
+            referencedColumnNames: id
+            onDelete: CASCADE
+  - changeSet:
+      id: 20190615-3
+      author: g.zaborovskiy
+      changes:
+        - addColumn:
+            tableName: user
+            column:
+              name: roles
+              type: text
+              remarks: user roles serialized

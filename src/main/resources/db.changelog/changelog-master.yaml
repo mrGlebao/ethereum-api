@@ -1,1 +1,14 @@
-databaseChangeLog: - includeAll: path: db/changelog/changes/
+databaseChangeLog:
+  - include:
+      file: changes/entity_credentials.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changes/entity_user.yaml
+      relativeToChangelogFile: true
+  - changeSet:
+      id: 20190615-1
+      author: g.zaborovskiy
+      createSequence:
+        sequenceName: hibernate_sequence
+        startValue: 1000
+        incrementBy: 1
