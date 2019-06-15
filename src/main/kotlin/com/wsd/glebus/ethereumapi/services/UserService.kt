@@ -16,9 +16,7 @@ class UserService(var userRepository: UserRepository) {
     }
 
     fun add(userDTO: UserDTO): Long {
-        val user = User(userDTO.username, userDTO.password, true,
-                true, true, true,
-                userDTO.authorities)
+        val user = User(username = userDTO.username, password = userDTO.password, roles = userDTO.roles)
         return userRepository.save(user).getId()!!
     }
 

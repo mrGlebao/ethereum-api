@@ -3,6 +3,7 @@ package com.wsd.glebus.ethereumapi.domain
 import org.springframework.data.util.ProxyUtils
 import java.util.*
 import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.MappedSuperclass
 
@@ -14,7 +15,7 @@ abstract class AbstractJpaPersistable<T> {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private var id: T? = null
 
     fun getId(): T? {

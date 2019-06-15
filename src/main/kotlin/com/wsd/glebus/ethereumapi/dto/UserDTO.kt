@@ -13,5 +13,5 @@ data class UserDTO(
         val password: String,
 
         @NotEmpty
-        val authorities: Set<Role>) {
+        val roles: Set<Role>) {
 }
