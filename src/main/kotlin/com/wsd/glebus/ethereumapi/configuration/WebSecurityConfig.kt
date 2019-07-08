@@ -13,6 +13,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http.csrf().disable()
+                .cors().disable()
                 .httpBasic()
                 .and()
                 .authorizeRequests()

@@ -73,7 +73,7 @@ class Spring22SwaggerCompatibilityConfig {
                                        private val typeNameProviders: PluginRegistry<TypeNameProviderPlugin, DocumentationType>,
                                        private val enumTypeDeterminer: EnumTypeDeterminer) : TypeNameExtractor(typeResolver, typeNameProviders, enumTypeDeterminer) {
 
-        override fun typeName(context: ModelContext): String {
+        override fun typeName(context: ModelContext): String? {
             val type = asResolved(context.type)
             return if (isContainerType(type)) {
                 containerType(type)
@@ -85,15 +85,15 @@ class Spring22SwaggerCompatibilityConfig {
         }
 
         private fun genericTypeName(resolvedType: ResolvedType, context: ModelContext): String {
-            val erasedType = resolvedType.getErasedType()
+            val erasedType = resolvedType.erasedType
             val namingStrategy = context.genericNamingStrategy
-            val nameContext = ModelNameContext(resolvedType.getErasedType(),
+            val nameContext = ModelNameContext(resolvedType.erasedType,
                     context.documentationType)
             val simpleName = fromNullable(typeNameFor(erasedType)).or(typeName(nameContext))
             val sb = StringBuilder(String.format("%s%s", simpleName, namingStrategy.openGeneric))
             var first = true
-            for (index in 0 until erasedType.getTypeParameters().size) {
-                val typeParam = resolvedType.getTypeParameters().get(index)
+            for (index in 0 until erasedType.typeParameters.size) {
+                val typeParam = resolvedType.typeParameters[index]
                 if (first) {
                     sb.append(innerTypeName(typeParam, context))
                     first = false
@@ -106,14 +106,14 @@ class Spring22SwaggerCompatibilityConfig {
             return sb.toString()
         }
 
-        private fun innerTypeName(type: ResolvedType, context: ModelContext): String {
-            return if (type.getTypeParameters().size > 0 && type.getErasedType().getTypeParameters().size > 0) {
+        private fun innerTypeName(type: ResolvedType, context: ModelContext): String? {
+            return if (type.typeParameters.size > 0 && type.erasedType.typeParameters.isNotEmpty()) {
                 genericTypeName(type, context)
             } else simpleTypeName(type, context)
         }
 
-        private fun simpleTypeName(type: ResolvedType, context: ModelContext): String {
-            val erasedType = type.getErasedType()
+        private fun simpleTypeName(type: ResolvedType, context: ModelContext): String? {
+            val erasedType = type.erasedType
             if (type is ResolvedPrimitiveType) {
                 return typeNameFor(erasedType)
             } else if (enumTypeDeterminer.isEnum(erasedType)) {
@@ -128,7 +128,7 @@ class Spring22SwaggerCompatibilityConfig {
                     return typeName
                 }
             }
-            return typeName(ModelNameContext(type.getErasedType(), context.documentationType))
+            return typeName(ModelNameContext(type.erasedType, context.documentationType))
         }
 
         private fun typeName(context: ModelNameContext): String {
